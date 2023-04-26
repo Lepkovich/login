@@ -1,45 +1,16 @@
-// 1. Создайте обработчик события полной загрузки страницы и добавляйте новый код только в эту функцию.
-// Внимание, в этом случае невозможно будет использовать подход с указанием функции в атрибуте html.
-// То есть в JS коде вам надо находить элементы, и для них создавать функции-обработчики нужных событий.
-// 2. В поле "Full Name" запретите вводить цифры.
+// Вам нужно изменить код валидации формы следующим образом:
+// 1. Все поля должны быть заполнены
+// 2. Full Name может содержать только буквы и пробел
+// 3. Your username - может содержать только буквы, цифры, символ подчеркивания и тире
+// 4. Реализовать проверку введенного E-mail на корректность
+// 5. Поле пароля должно содержать минимум 8 символов, среди которых есть:
+// - хотя бы одна буква в верхнем регистре
+// - хотя бы одна цифра
+// - хотя бы один спецсимвол
+// 6. Password и Repeat Password должны совпадать
+// 7. Пользователь должен согласиться с условиями
 
 window.onload = function () { // сначала дождемся когда все элементы страницы будут загружены
-// 2. В поле "Full Name" запретите вводить цифры.
-
-    let fullName = document.getElementById('full-name');
-
-    fullName.onkeydown = (e) => {
-        let number = parseInt(e.key); // мы приводим вводимые символы к цифрам. все, кроме цифр дадут NaN
-        if (!isNaN(number)) { // не NaN будет true
-            return false; // и мы выйдем из функции (не цифры не введутся)
-        }
-    }
-// 3. В поле "Your username" запретите вводить точки и запятые.
-
-    let userName = document.getElementById('user-name');
-
-    userName.onkeydown = (e) => {
-        if (e.key === '.' || e.key === ',') { // ввод . или , дадут true
-            return false; // выйдем из функции (,. не введутся)
-        }
-    }
-
-// 4. При изменении значения чекбокса выводите в консоль соответствующее сообщение: “Согласен” или “Не согласен”.
-    let checkBox = document.getElementById('agreement');
-
-    checkBox.addEventListener('click', (e) => {
-        if (checkBox.checked) {
-            console.log('Согласен');
-        } else {
-            console.log('Не согласен')
-        }
-    })
-
-// 5. При нажатии на кнопку “Sign Up”:
-// • Проверьте на существование значения в каждом текстовом поле.
-// Если какое-то поле не заполнено, выведите сообщение об ошибке, используя alert.
-// Сообщение должно быть следующего вида: "Заполните поле E-mail".
-
 
     let button = document.getElementById('button');
 
@@ -61,26 +32,88 @@ window.onload = function () { // сначала дождемся когда вс
                     return;
                 }
         }
-        let inputs = document.querySelectorAll('input');
-        let labels = document.querySelectorAll('label');
+
+
         let isValid = true;
-        for (let i = 0;isValid && i < (inputs.length-2); i++) {
-            if (inputs[i].value ==='') {
-                alert('Заполните поле ' + labels[i].textContent);
+        let inputs = document.querySelectorAll('input');
+
+        for (let i = 0; i < inputs.length-2; i++) {
+            inputs[i].style.borderColor = ''; // сбрасываем цвет input на стандартный
+            inputs[i].nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
+            if (inputs[i].value === '') {
+                inputs[i].style.borderColor = 'red';
+                inputs[i].nextElementSibling.style.display = 'flex'
                 isValid = false;
             }
         }
-// • Проверьте совпадают ли пароли из двух текстовых полей. Если пароли не совпадают, выведите сообщение об ошибке, используя alert.
-        let repeatPassword = document.getElementById('repeat-password');
+        let fullName = document.getElementById('full-name');
+        let validFullName = fullName.value.match(/^[а-яёА-ЯЁa-zA-Z\s]+$/);
+        console.log(validFullName);
+        if (!validFullName && fullName.value !== '') {
+            fullName.style.borderColor = 'red';
+            fullName.nextElementSibling.innerText = 'Full name may contain of letters and space only';
+            fullName.nextElementSibling.style.display = 'flex';
+            isValid = false;
+        } else {
+            fullName.nextElementSibling.innerText = 'Please enter your full name';
+            fullName.style.borderColor = '';
+        }
+
+        let userName = document.getElementById('user-name');
+        let validUserName = userName.value.match(/^[-_а-яёА-ЯЁa-zA-Z0-9\s]+$/);
+        if (!validUserName && userName.value !== '') {
+            userName.style.borderColor = 'red';
+            userName.nextElementSibling.innerText = 'User name may contain of digits, letters, spaces, - and _ symbols only';
+            userName.nextElementSibling.style.display = 'flex';
+            isValid = false;
+        } else {
+            userName.nextElementSibling.innerText = 'Please enter your User name';
+            userName.style.borderColor = '';
+        }
+
+
+        let email = document.getElementById('email');
+        let validEmail = email.value.match(/^\S+@\S+\.\S+$/);
+        if (!validEmail && email.value !== '') {
+            email.style.borderColor = 'red';
+            email.nextElementSibling.innerText = 'Please inter a valid e-mail with @ and domain';
+            email.nextElementSibling.style.display = 'flex';
+            isValid = false;
+        } else {
+            email.nextElementSibling.innerText = 'Please enter e-mail';
+            email.style.borderColor = '';
+        }
+
+
         let password = document.getElementById('password');
+        let validPassword = password.value.match(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Zа-яА-Я0-9!@#$%^&*()_+]{8,}$/);
+        if (!validPassword && password.value !== '') {
+            password.style.borderColor = 'red';
+            password.nextElementSibling.innerText = 'Password should contain at least one uppercase letter, one digit and special character. Not less than 8 symbols long';
+            password.nextElementSibling.style.display = 'flex';
+            isValid = false;
+        } else {
+            password.nextElementSibling.innerText = 'Please enter your password';
+            password.style.borderColor = '';
+        }
+
+
+        let repeatPassword = document.getElementById('repeat-password');
+
         if (repeatPassword.value !== '' && repeatPassword.value !== password.value) {
-            alert('Пароли не совпадают, повторите ввод');
+            repeatPassword.nextElementSibling.innerText = 'Passwords does not match';
+            repeatPassword.nextElementSibling.style.display = 'flex'
             repeatPassword.value = '';
             isValid = false;
+        }else {
+            repeatPassword.nextElementSibling.innerText = 'Please repeat your password';
+            repeatPassword.style.borderColor = '';
         }
-// • Проверьте выбран ли чекбокс. Если чекбокс не выбран, выведите сообщение об ошибке, используя alert.
+        let checkBox = document.getElementById('agreement');
+        let errorCheckBox = document.getElementById('error-checkbox');
+
         if (!checkBox.checked && isValid) {
-            alert('Вы не поставили галочку на согласие обработки данных');
+            errorCheckBox.style.display = 'flex'
             isValid = false;
         }
 // • Если код прошёл все проверки успешно - должен появиться попап с текстом «На вашу почту выслана ссылка, перейдите по ней,
@@ -101,12 +134,7 @@ window.onload = function () { // сначала дождемся когда вс
 
 // • Пароль должен содержать не менее 8 символов. Если пароль короче, то выведите сообщение об ошибке через alert.
 
-    password.addEventListener("focusout", (e) => {
-        if (password.value !== '' && password.value.length < 8) {
-            alert('Пароль должен содержать не менее 8 символов');
-            password.value = '';
-        }
-    })
+
 
 // 6. При нажатии на ссылку «Already have an account?», а также на кнопку «ОК» в попапе реализовать имитацию перехода на страницу логина.
 // Для этого с исходной страницей с помощью JS нужно произвести следующие действия:

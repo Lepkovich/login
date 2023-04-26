@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Контрольное задание 8</title>
+    <title>Контрольное задание 14</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -26,18 +26,24 @@
             <form action="" method="get" class="sign-up-form">
                 <label for="full-name" class="form-label">Full Name</label>
                 <input type="text" name="full-name" id="full-name" class="form-field" >
+                <div class="error-input">Please enter your full name</div>
                 <label for="user-name" class="form-label sign-up">Your username</label>
                 <input type="text" name="name" id="user-name" class="form-field" >
+                <div class="error-input">Please enter your username</div>
                 <label for="email" class="form-label">E-mail</label>
                 <input type="email" name="email" id="email" class="form-field" >
+                <div class="error-input">Please enter e-mail</div>
                 <label for="password" class="form-label sign-up">Password</label>
                 <input type="password" name="password" id="password" class="form-field" >
+                <div class="error-input">Please enter your password</div>
                 <label for="repeat-password" class="form-label">Repeat Password</label>
                 <input type="password" name="repeat-password" id="repeat-password" class="form-field" >
+                <div class="error-input">Please repeat your password</div>
                 <div class="agreement-block">
                     <input type="checkbox" id="agreement" name="agreement" class="checkbox">
                     <label for="agreement" class="agreement-text">Agree to our Terms of Service and Privacy Statement</label>
                 </div>
+                <div class="error-checkbox" id="error-checkbox">Please tick the checkbox</div>
                 <input class="button" type="submit" value="Sign Up" id="button">
                 <a id="have-account">Already have an account?</a>
             </form>
