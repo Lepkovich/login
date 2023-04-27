@@ -11,6 +11,7 @@
 
 body {
     font-family: Nunito, sans-serif;
+    position: relative;
 }
 
 .logo {

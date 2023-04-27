@@ -13,26 +13,14 @@
 window.onload = function () { // сначала дождемся когда все элементы страницы будут загружены
 
     let button = document.getElementById('button');
+    let haveAccount = document.getElementById('have-account');
 
     button.addEventListener('click', SingUp);
 
+
+
     function SingUp(e) {
         e.preventDefault();
-// • Заменить слушатель события для кнопки «Sign In»: нужно проверить только то, что оба поля (Username и Password) заполнены.
-// Если какое-то из полей не заполнено - вывести ошибку. Если оба заполнены - вывести через alert сообщение "Добро пожаловать, username!",
-// где username - значение из соответствующего поля.
-        if (button.value === 'Sign In') {  // Если кнопка уже Sign In
-                let userName=document.getElementById('user-name');
-                let password=document.getElementById('password');
-                if (userName.value === '' || password.value === '') {
-                    alert('Поля не заполнены!');
-                    return;
-                } else {
-                    alert('Добро пожаловать, ' + userName.value + '!');
-                    return;
-                }
-        }
-
 
         let isValid = true;
         let inputs = document.querySelectorAll('input');
@@ -48,7 +36,6 @@ window.onload = function () { // сначала дождемся когда вс
         }
         let fullName = document.getElementById('full-name');
         let validFullName = fullName.value.match(/^[а-яёА-ЯЁa-zA-Z\s]+$/);
-        console.log(validFullName);
         if (!validFullName && fullName.value !== '') {
             fullName.style.borderColor = 'red';
             fullName.nextElementSibling.innerText = 'Full name may contain of letters and space only';
@@ -57,6 +44,7 @@ window.onload = function () { // сначала дождемся когда вс
         } else {
             fullName.nextElementSibling.innerText = 'Please enter your full name';
             fullName.style.borderColor = '';
+
         }
 
         let userName = document.getElementById('user-name');
@@ -116,10 +104,11 @@ window.onload = function () { // сначала дождемся когда вс
             errorCheckBox.style.display = 'flex'
             isValid = false;
         }
+
 // • Если код прошёл все проверки успешно - должен появиться попап с текстом «На вашу почту выслана ссылка, перейдите по ней,
 // чтобы завершить регистрацию» и кнопкой «ОК».
 // При нажатии на кнопку «ОК» окно закрывается, форма очищается и пользователя перебрасывает на страницу логина (см. п.6).
-// Модального окна в макете нет, его нужно создать самостоятельно, соблюдая общую стилистику макета.
+
 
         if (isValid) {
             let popup = document.getElementById('popup'),
@@ -131,8 +120,6 @@ window.onload = function () { // сначала дождемся когда вс
             }
         }
     }
-
-// • Пароль должен содержать не менее 8 символов. Если пароль короче, то выведите сообщение об ошибке через alert.
 
 
 
@@ -147,10 +134,10 @@ window.onload = function () { // сначала дождемся когда вс
 // Если какое-то из полей не заполнено - вывести ошибку.
 // Если оба заполнены - вывести через alert сообщение "Добро пожаловать, username!", где username - значение из соответствующего поля.
 
-    let haveAccount = document.getElementById('have-account');
+
 
     haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
-    function signIn(e) {
+    function signIn() {
         document.getElementById('title').innerText='Log in to the system'; // меняем заголовок
         let labels = document.querySelectorAll('label');
         labels.forEach((item)=>{
@@ -160,7 +147,9 @@ window.onload = function () { // сначала дождемся когда вс
             item.remove(); // удаляем все label, кроме тех, у кого в class есть sign-up
         })
         let inputs = document.querySelectorAll('input');
+
         inputs.forEach((item)=>{
+
             if (item.id === 'user-name' || item.id === 'password') {
                 item.value = '';
                 return;
@@ -168,10 +157,42 @@ window.onload = function () { // сначала дождемся когда вс
                 return;
             }
             item.remove(); // удаляем ненужные нам input
+            // item[a].nextElementSibling.remove(); // скрываем сообщения об ошибках, если есть
         })
-        document.getElementById('button').value='Sign In'; // Поменяли кнопку на Sign In
-        document.getElementById('have-account').remove(); // Удалили ссылку 'Already have an account?'
 
+        // button.removeEventListener("click", SingUp);
+        button.value='Sign In';
+        button.addEventListener('click', logIn);
+        // haveAccount.removeEventListener('click', signIn)
+        haveAccount.innerText = 'Registration'; // Заменили текст у ссылки 'Already have an account?'
+        haveAccount.addEventListener('click', function (){
+            console.log('нажали на Registration')
+            window.location.reload();
+        });
+    }
+
+    function logIn() {
+        let isValid = true;
+        console.log('мы внутри функции Registration');
+        let userName=document.getElementById('user-name');
+        let password=document.getElementById('password');
+        userName.style.borderColor = 'black'; // сбрасываем цвет input на стандартный
+        userName.nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
+        password.style.borderColor = 'black'; // сбрасываем цвет input на стандартный
+        password.nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
+
+        if (userName.value === '') {
+            userName.nextElementSibling.style.display = 'flex';
+            userName.style.borderColor = 'green';
+            isValid = false;
+        }
+
+        if (password.value === '') {
+            password.nextElementSibling.style.display = 'flex';
+            password.style.borderColor = 'green';
+            isValid = false;
+        }
+        console.log('мы на выходе Sign In');
     }
 
 }
