@@ -12,17 +12,9 @@
 
 window.onload = function () { // сначала дождемся когда все элементы страницы будут загружены
 
-    let button = document.getElementById('button');
-    let haveAccount = document.getElementById('have-account');
-    let clients = [];
-
-    button.addEventListener('click', SignUp);
-    haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
-
 
     function SignUp(e) {
         e.preventDefault();
-        button.removeEventListener('click', SignUp);
         let isValid = true;
 
         let fullName = document.getElementById('full-name');
@@ -116,7 +108,8 @@ window.onload = function () { // сначала дождемся когда вс
 // Если оба заполнены - вывести через alert сообщение "Добро пожаловать, username!", где username - значение из соответствующего поля.
 
 
-    function signIn() {
+    function signIn(e) {
+        e.preventDefault();
         document.getElementById('title').innerText = 'Log in to the system'; // меняем заголовок
         let labels = document.querySelectorAll('label');
         labels.forEach((item) => {
@@ -140,7 +133,10 @@ window.onload = function () { // сначала дождемся когда вс
         })
 
         button.value = 'Sign In';
-        // button.addEventListener('click', logIn);
+
+        button.addEventListener('click', logIn);
+        button.removeEventListener('click', SignUp);
+
         haveAccount.innerText = 'Registration'; // Заменили текст у ссылки 'Already have an account?'
 
         // haveAccount.addEventListener('click', function (){
@@ -149,10 +145,11 @@ window.onload = function () { // сначала дождемся когда вс
         // });
     }
 
-    button.removeEventListener('click', SignUp);
 
 
-    function logIn() {
+
+    function logIn(e) {
+        e.preventDefault();
         let isValid = true;
         console.log('мы внутри функции Registration');
         let userName = document.getElementById('user-name');
@@ -190,4 +187,12 @@ window.onload = function () { // сначала дождемся когда вс
             console.log('Клиент не найден!');
         }
     }
+
+    let button = document.getElementById('button');
+    let haveAccount = document.getElementById('have-account');
+    let clients = [];
+
+    button.addEventListener('click', SignUp);
+    haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
+
 }
