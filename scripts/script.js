@@ -16,6 +16,7 @@ window.onload = function () { // сначала дождемся когда вс
     let haveAccount = document.getElementById('have-account');
 
     button.addEventListener('click', SingUp);
+    haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
 
 
 
@@ -136,8 +137,8 @@ window.onload = function () { // сначала дождемся когда вс
 
 
 
-    haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
-    function signIn() {
+    function signIn(e) {
+        e.preventDefault();
         document.getElementById('title').innerText='Log in to the system'; // меняем заголовок
         let labels = document.querySelectorAll('label');
         labels.forEach((item)=>{
@@ -171,7 +172,8 @@ window.onload = function () { // сначала дождемся когда вс
         });
     }
 
-    function logIn() {
+    function logIn(e) {
+        e.preventDefault();
         let isValid = true;
         console.log('мы внутри функции Registration');
         let userName=document.getElementById('user-name');
