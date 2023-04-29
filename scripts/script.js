@@ -173,7 +173,7 @@ window.onload = function () { // сначала дождемся когда вс
     }
 
     function logIn(e) {
-        e.preventDefault();
+
         let isValid = true;
         console.log('мы внутри функции Registration');
         let userName=document.getElementById('user-name');
