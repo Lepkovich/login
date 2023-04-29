@@ -14,6 +14,7 @@ window.onload = function () { // сначала дождемся когда вс
 
     let button = document.getElementById('button');
     let haveAccount = document.getElementById('have-account');
+    let clients = [];
 
     button.addEventListener('click', SingUp);
     haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
@@ -104,6 +105,8 @@ window.onload = function () { // сначала дождемся когда вс
         if (!checkBox.checked && isValid) {
             errorCheckBox.style.display = 'flex'
             isValid = false;
+        } else {
+            errorCheckBox.style.display = 'none'
         }
 
 // • Если код прошёл все проверки успешно - должен появиться попап с текстом «На вашу почту выслана ссылка, перейдите по ней,
@@ -112,6 +115,44 @@ window.onload = function () { // сначала дождемся когда вс
 
 
         if (isValid) {
+            let name = fullName.value;
+            let username = userName.value;
+            let mail = email.value;
+            let psw = password.value;
+
+            let client = {
+                name,
+                username,
+                mail,
+                psw
+            }
+            clients.push(client);
+            console.log(clients);
+            console.log('текущий localStorage: ' + localStorage);
+            console.log(localStorage);
+            console.log('переменная client: ' + client);
+            console.log(client);
+
+            // получаем существующих клиентов и localStorage
+            let existingClients = JSON.parse(localStorage.getItem('clients')) || [];
+
+            console.log('переменная existingClients: ' + existingClients);
+            console.log(existingClients);
+
+            // Добавляем нового клиента в массив существующих клиентов
+            existingClients.push(client);
+
+            console.log('existingClients + client: ' + existingClients);
+            console.log(existingClients);
+
+
+            // Сохраняем обновленный массив клиентов в localStorage
+            localStorage.setItem('clients', JSON.stringify(existingClients));
+
+            console.log('localStorage' + localStorage);
+            console.log(localStorage);
+
+
             let popup = document.getElementById('popup'),
                 closePopup = document.getElementById('close-popup');
             popup.style.display='flex';
@@ -147,54 +188,92 @@ window.onload = function () { // сначала дождемся когда вс
             }
             item.remove(); // удаляем все label, кроме тех, у кого в class есть sign-up
         })
+
         let inputs = document.querySelectorAll('input');
 
-        inputs.forEach((item)=>{
+        inputs.forEach((item, index)=>{
 
+            if (item.id === 'button') {
+                return;
+            } else if (inputs[index] && inputs[index].nextElementSibling) { // скрываем сообщения об ошибках, если есть
+                inputs[index].nextElementSibling.style.display = 'none';
+            }
             if (item.id === 'user-name' || item.id === 'password') {
                 item.value = '';
                 return;
-            } else if (item.id === 'button') {
-                return;
             }
             item.remove(); // удаляем ненужные нам input
-            // item[a].nextElementSibling.remove(); // скрываем сообщения об ошибках, если есть
+
+
         })
 
-        // button.removeEventListener("click", SingUp);
+        button.removeEventListener("click", SingUp);
         button.value='Sign In';
         button.addEventListener('click', logIn);
-        // haveAccount.removeEventListener('click', signIn)
+        haveAccount.removeEventListener('click', signIn)
         haveAccount.innerText = 'Registration'; // Заменили текст у ссылки 'Already have an account?'
         haveAccount.addEventListener('click', function (){
-            console.log('нажали на Registration')
             window.location.reload();
         });
     }
 
     function logIn(e) {
-
+        e.preventDefault();
         let isValid = true;
-        console.log('мы внутри функции Registration');
         let userName=document.getElementById('user-name');
         let password=document.getElementById('password');
-        userName.style.borderColor = 'black'; // сбрасываем цвет input на стандартный
+        userName.style.borderColor = ''; // сбрасываем цвет input на стандартный
         userName.nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
-        password.style.borderColor = 'black'; // сбрасываем цвет input на стандартный
+        password.style.borderColor = ''; // сбрасываем цвет input на стандартный
         password.nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
 
         if (userName.value === '') {
             userName.nextElementSibling.style.display = 'flex';
-            userName.style.borderColor = 'green';
+            userName.style.borderColor = 'red';
             isValid = false;
         }
 
         if (password.value === '') {
             password.nextElementSibling.style.display = 'flex';
-            password.style.borderColor = 'green';
+            password.style.borderColor = 'red';
             isValid = false;
         }
-        console.log('мы на выходе Sign In');
+
+        if (isValid) {
+            let name = userName.value;
+            let psw = password.value;
+            let loginClient = {
+                name,
+                psw
+            }
+            let storedClients = localStorage.getItem('clients');
+            if (storedClients) {
+                clients = JSON.parse(storedClients);
+            }
+            let isClientExist = clients.some(client => {
+                return client.username === loginClient.name ;
+            });
+            if (!isClientExist) {
+                userName.nextElementSibling.style.display = 'flex';
+                userName.nextElementSibling.innerText = 'Such user does not exist!';
+                userName.style.borderColor = 'red';
+            } else {
+                userName.nextElementSibling.innerText = 'Please enter User name';
+                userName.style.borderColor = '';
+            }
+            let isPasswordMatch = clients.some(client => {
+                return client.username === loginClient.name  &&  client.psw === loginClient.psw;
+            });
+            if (!isPasswordMatch) {
+                password.nextElementSibling.style.display = 'flex';
+                password.nextElementSibling.innerText = 'Password does not match';
+                password.style.borderColor = 'red';
+            } else {
+                userName.nextElementSibling.innerText = 'Please enter your password';
+                userName.style.borderColor = '';
+            }
+
+        }
     }
 
 }
