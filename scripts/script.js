@@ -184,7 +184,6 @@ window.onload = function () { // сначала дождемся когда вс
         let inputs = document.querySelectorAll('input');
 
         inputs.forEach((item, index) => {
-
             if (item.id === 'button') {
                 return;
             } else if (inputs[index] && inputs[index].nextElementSibling) { // скрываем сообщения об ошибках, если есть
@@ -195,8 +194,6 @@ window.onload = function () { // сначала дождемся когда вс
                 return;
             }
             item.remove(); // удаляем ненужные нам input
-
-
         })
 
         button.removeEventListener("click", SingUp);
@@ -281,6 +278,7 @@ window.onload = function () { // сначала дождемся когда вс
                 let foundClient = clients.find(client => {
                     return client.username === loginClient.username;
                 });
+                console.log(foundClient);
                 document.getElementById('title').innerText = 'Welcome, ' + foundClient.name; // меняем заголовок
                 document.querySelectorAll('label').forEach((item) => {
                     item.remove(); //
