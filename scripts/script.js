@@ -1,48 +1,70 @@
-// Вам нужно изменить код валидации формы следующим образом:
-// 1. Все поля должны быть заполнены
-// 2. Full Name может содержать только буквы и пробел
-// 3. Your username - может содержать только буквы, цифры, символ подчеркивания и тире
-// 4. Реализовать проверку введенного E-mail на корректность
-// 5. Поле пароля должно содержать минимум 8 символов, среди которых есть:
-// - хотя бы одна буква в верхнем регистре
-// - хотя бы одна цифра
-// - хотя бы один спецсимвол
-// 6. Password и Repeat Password должны совпадать
-// 7. Пользователь должен согласиться с условиями
 
 window.onload = function () { // сначала дождемся когда все элементы страницы будут загружены
 
+    let button = document.getElementById('button');
+    let haveAccount = document.getElementById('have-account');
+    let clients = [];
 
-    function SignUp(e) {
+    button.addEventListener('click', SingUp);
+    haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
+
+
+    function SingUp(e) {
         e.preventDefault();
         let isValid = true;
 
+        for (let i = 0; i < inputs.length - 2; i++) {
+            inputs[i].style.borderColor = ''; // сбрасываем цвет input на стандартный
+            inputs[i].nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
+            if (inputs[i].value === '') {
+                inputs[i].style.borderColor = 'red';
+                inputs[i].nextElementSibling.style.display = 'flex'
+                isValid = false;
+            }
+        }
         let fullName = document.getElementById('full-name');
-        // let validFullName = fullName.value.match(/^[а-яёА-ЯЁa-zA-Z\s]+$/);
-        if (fullName.value !== '') {
+        let validFullName = fullName.value.match(/^[а-яёА-ЯЁa-zA-Z\s]+$/); // Full Name может содержать только буквы и пробел
+        if (!validFullName && fullName.value !== '') {
+            fullName.style.borderColor = 'red';
+            fullName.nextElementSibling.innerText = 'Full name may contain of letters and space only';
+            fullName.nextElementSibling.style.display = 'flex';
+            isValid = false;
+        } else {
+            fullName.nextElementSibling.innerText = 'Please enter your full name';
+            fullName.style.borderColor = '';
 
             isValid = false;
         }
 
         let userName = document.getElementById('user-name');
-        // let validUserName = userName.value.match(/^[-_а-яёА-ЯЁa-zA-Z0-9\s]+$/);
-        if (userName.value !== '') {
-
+        let validUserName = userName.value.match(/^[-_а-яёА-ЯЁa-zA-Z0-9\s]+$/); //может содержать только буквы, цифры, символ подчеркивания и тире
+        if (!validUserName && userName.value !== '') {
+            userName.style.borderColor = 'red';
+            userName.nextElementSibling.innerText = 'User name may contain of digits, letters, spaces, - and _ symbols only';
+            userName.nextElementSibling.style.display = 'flex';
             isValid = false;
         }
 
         let email = document.getElementById('email');
-        // let validEmail = email.value.match(/^\S+@\S+\.\S+$/);
-        if (email.value !== '') {
-
+        let validEmail = email.value.match(/^\S+@\S+\.\S+$/); // корректный емейл ---@---.---
+        if (!validEmail && email.value !== '') {
+            email.style.borderColor = 'red';
+            email.nextElementSibling.innerText = 'Please inter a valid e-mail with @ and domain';
+            email.nextElementSibling.style.display = 'flex';
             isValid = false;
         }
 
 
         let password = document.getElementById('password');
-        // let validPassword = password.value.match(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Zа-яА-Я0-9!@#$%^&*()_+]{8,}$/);
-        if (password.value !== '') {
-
+        // 5. Поле пароля должно содержать минимум 8 символов, среди которых есть:
+        // - хотя бы одна буква в верхнем регистре
+        // - хотя бы одна цифра
+        // - хотя бы один спецсимвол
+        let validPassword = password.value.match(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Zа-яА-Я0-9!@#$%^&*()_+]{8,}$/);
+        if (!validPassword && password.value !== '') {
+            password.style.borderColor = 'red';
+            password.nextElementSibling.innerText = 'Password should contain at least one uppercase letter, one digit and special character. Not less than 8 symbols long';
+            password.nextElementSibling.style.display = 'flex';
             isValid = false;
         }
 
@@ -51,6 +73,9 @@ window.onload = function () { // сначала дождемся когда вс
 
         if (repeatPassword.value !== '' && repeatPassword.value !== password.value) {
             isValid = false;
+        } else {
+            repeatPassword.nextElementSibling.innerText = 'Please repeat your password';
+            repeatPassword.style.borderColor = '';
         }
 
         let checkBox = document.getElementById('agreement');
@@ -59,31 +84,55 @@ window.onload = function () { // сначала дождемся когда вс
         if (!checkBox.checked && isValid) {
             errorCheckBox.style.display = 'flex'
             isValid = false;
+        } else {
+            errorCheckBox.style.display = 'none'
         }
+
+
+        if (isValid) {
+            let name = fullName.value;
+            let username = userName.value;
+            let mail = email.value;
+            let psw = password.value;
+
+            // записываем введенные корректные данные клиента в client
+            let client = {
+                name,
+                username,
+                mail,
+                psw
+            }
+            clients.push(client); // добавляем текущего клиента в массив clients
+            console.log('переменная client: ');
+            console.log(client);
+            console.log('массив clients: ');
+            console.log(clients);
+            console.log('текущий localStorage: ');
+            console.log(localStorage);
+
+
+            // получаем существующих клиентов из localStorage
+            let existingClients = JSON.parse(localStorage.getItem('clients')) || [];
+
+            console.log('переменная existingClients: ');
+            console.log(existingClients);
+
+            // Добавляем нового клиента в массив существующих клиентов
+            existingClients.push(client);
+
+            console.log('existingClients + client: ');
+            console.log(existingClients);
+
+
+            // Сохраняем обновленный массив клиентов в localStorage
+            localStorage.setItem('clients', JSON.stringify(existingClients));
+
+            console.log('localStorage: ');
+            console.log(localStorage);
 
 // • Если код прошёл все проверки успешно - должен появиться попап с текстом «На вашу почту выслана ссылка, перейдите по ней,
 // чтобы завершить регистрацию» и кнопкой «ОК».
 // При нажатии на кнопку «ОК» окно закрывается, форма очищается и пользователя перебрасывает на страницу логина (см. п.6).
-
-
-        if (!isValid) {
-            let userFullName = fullName.value; // считываем пользовательские поля
-            let userUserName = userName.value;
-            let userEmail = email.value;
-            let userPassword = password.value;
-
-            let newClient = { // Создаем новый объект клиента
-                userFullName,
-                userUserName,
-                userEmail,
-                userPassword
-            };
-            // получаем из localStorage существующих клиентов
-            let existingClients = JSON.parse(localStorage.getItem('clients')) || [];
-
-            existingClients.push(newClient); // добавляем нового пользователя в массив
-
-            localStorage.setItem('clients', JSON.stringify(existingClients)); //сохраняем обновленный массив в localStorage
 
             let popup = document.getElementById('popup'),
                 closePopup = document.getElementById('close-popup');
@@ -118,81 +167,122 @@ window.onload = function () { // сначала дождемся когда вс
             }
             item.remove(); // удаляем все label, кроме тех, у кого в class есть sign-up
         })
+
         let inputs = document.querySelectorAll('input');
 
-        inputs.forEach((item) => {
-
+        inputs.forEach((item, index) => {
+            if (item.id === 'button') {
+                return;
+            } else if (inputs[index] && inputs[index].nextElementSibling) { // скрываем сообщения об ошибках, если есть
+                inputs[index].nextElementSibling.style.display = 'none';
+            }
             if (item.id === 'user-name' || item.id === 'password') {
                 item.value = '';
                 return;
-            } else if (item.id === 'button') {
-                return;
             }
             item.remove(); // удаляем ненужные нам input
-            // item[a].nextElementSibling.remove(); // скрываем сообщения об ошибках, если есть
         })
 
+        button.removeEventListener("click", SingUp);
         button.value = 'Sign In';
-
         button.addEventListener('click', logIn);
-        button.removeEventListener('click', SignUp);
-
+        haveAccount.removeEventListener('click', signIn)
         haveAccount.innerText = 'Registration'; // Заменили текст у ссылки 'Already have an account?'
-
-        // haveAccount.addEventListener('click', function (){
-        //     console.log('нажали на Registration')
-        //     window.location.reload();
-        // });
+        haveAccount.addEventListener('click', function () {
+            window.location.reload();
+        });
     }
-
-
-
 
     function logIn(e) {
         e.preventDefault();
         let isValid = true;
-        console.log('мы внутри функции Registration');
+        let userAccount = false
         let userName = document.getElementById('user-name');
         let password = document.getElementById('password');
-        userName.style.borderColor = 'black'; // сбрасываем цвет input на стандартный
+        userName.style.borderColor = ''; // сбрасываем цвет input на стандартный
         userName.nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
-        password.style.borderColor = 'black'; // сбрасываем цвет input на стандартный
+        password.style.borderColor = ''; // сбрасываем цвет input на стандартный
         password.nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
 
         if (userName.value === '') {
             userName.nextElementSibling.style.display = 'flex';
-            userName.style.borderColor = 'green';
+            userName.style.borderColor = 'red';
             isValid = false;
         }
 
         if (password.value === '') {
             password.nextElementSibling.style.display = 'flex';
-            password.style.borderColor = 'green';
+            password.style.borderColor = 'red';
             isValid = false;
         }
-        console.log('мы на выходе Sign In');
-        let isClientExist = false;
 
         if (isValid) {
-            isClientExist = clients.some(client => {
-                return (
-                    client.userName === userUserName &&
-                    client.password === userPassword
-                );
+            let username = userName.value;
+            let psw = password.value;
+            let loginClient = {
+                username,
+                psw
+            }
+            let storedClients = localStorage.getItem('clients');
+            if (storedClients) {
+                clients = JSON.parse(storedClients);
+            }
+            let isClientExist = clients.some(client => {
+                return client.username === loginClient.username;
             });
-        }
-        if (isClientExist) {
-            console.log('Клиент найден!');
-        } else {
-            console.log('Клиент не найден!');
+            if (!isClientExist) {
+                userName.nextElementSibling.style.display = 'flex';
+                userName.nextElementSibling.innerText = 'Such user does not exist!';
+                userName.style.borderColor = 'red';
+                userAccount = false;
+            } else {
+                userName.nextElementSibling.innerText = 'Please enter User name';
+                userName.style.borderColor = '';
+                userAccount = true;
+            }
+            let isPasswordMatch = clients.some(client => {
+                return client.username === loginClient.username && client.psw === loginClient.psw;
+            });
+            if (!isPasswordMatch) {
+                password.nextElementSibling.style.display = 'flex';
+                password.nextElementSibling.innerText = 'Password does not match';
+                password.style.borderColor = 'red';
+                userAccount = false;
+            } else {
+                userName.nextElementSibling.innerText = 'Please enter your password';
+                userName.style.borderColor = '';
+                userAccount = true;
+            }
+// 3 страница: Личный кабинет
+// Чтобы имитировать переход в личный кабинет, нужно:
+//
+// Текст заголовка необходимо заменить на «Welcome, name!», где name - это имя залогиненного пользователя.
+//     Внимание: имя - это не username, а то, что пользователь вводил в full name!    Текст на кнопке «Sign In» заменить на «Exit»
+//     и заменить слушатель на этой кнопке: теперь она должна просто перезагружать страницу, чтобы имитировать выход на страницу регистрации.
+//     Все остальные элементы (текст под заголовком, поля Username и Password, ссылку "Registration") нужно удалить
+
+            if (userAccount) {
+                let foundClient = clients.find(client => {
+                    return client.username === loginClient.username;
+                });
+                console.log(foundClient);
+                document.getElementById('title').innerText = 'Welcome, ' + foundClient.name; // меняем заголовок
+                document.querySelectorAll('label').forEach((item) => {
+                    item.remove(); //
+                })
+                document.querySelectorAll('input').forEach((item, index) => {
+                    if (item.id === 'button') {
+                        return;
+                    }
+                    item.remove();
+                })
+                button.value = 'Exit';
+                button.removeEventListener('click', logIn);
+                button.addEventListener('click', function () {
+                    window.location.reload();
+                });
+                haveAccount.remove();
+            }
         }
     }
-
-    let button = document.getElementById('button');
-    let haveAccount = document.getElementById('have-account');
-    let clients = [];
-
-    button.addEventListener('click', SignUp);
-    haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
-
 }
