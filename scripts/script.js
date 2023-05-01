@@ -8,6 +8,11 @@ window.onload = function () { // сначала дождемся когда вс
     button.addEventListener('click', SingUp);
     haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
 
+    function redMsg(errorMsg, field) {
+        field.style.borderColor = 'red';
+        field.nextElementSibling.style.display = 'flex';
+        field.nextElementSibling.innerText = errorMsg;
+    }
 
     function SingUp(e) {
         e.preventDefault();
@@ -19,17 +24,14 @@ window.onload = function () { // сначала дождемся когда вс
             inputs[i].style.borderColor = ''; // сбрасываем цвет input на стандартный
             inputs[i].nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
             if (inputs[i].value === '') {
-                inputs[i].style.borderColor = 'red';
-                inputs[i].nextElementSibling.style.display = 'flex'
+                redMsg("",inputs[i]);
                 isValid = false;
             }
         }
         let fullName = document.getElementById('full-name');
         let validFullName = fullName.value.match(/^[а-яёА-ЯЁa-zA-Z\s]+$/); // Full Name может содержать только буквы и пробел
         if (!validFullName && fullName.value !== '') {
-            fullName.style.borderColor = 'red';
-            fullName.nextElementSibling.innerText = 'Full name may contain of letters and space only';
-            fullName.nextElementSibling.style.display = 'flex';
+            redMsg('Full name may contain of letters and space only', fullName);
             isValid = false;
         } else {
             fullName.nextElementSibling.innerText = 'Please enter your full name';
@@ -40,9 +42,7 @@ window.onload = function () { // сначала дождемся когда вс
         let userName = document.getElementById('user-name');
         let validUserName = userName.value.match(/^[-_а-яёА-ЯЁa-zA-Z0-9\s]+$/); //может содержать только буквы, цифры, символ подчеркивания и тире
         if (!validUserName && userName.value !== '') {
-            userName.style.borderColor = 'red';
-            userName.nextElementSibling.innerText = 'User name may contain of digits, letters, spaces, - and _ symbols only';
-            userName.nextElementSibling.style.display = 'flex';
+            redMsg('User name may contain of digits, letters, spaces, - and _ symbols only', userName);
             isValid = false;
         } else {
             userName.nextElementSibling.innerText = 'Please enter your User name';
@@ -53,9 +53,7 @@ window.onload = function () { // сначала дождемся когда вс
         let email = document.getElementById('email');
         let validEmail = email.value.match(/^\S+@\S+\.\S+$/); // корректный емейл ---@---.---
         if (!validEmail && email.value !== '') {
-            email.style.borderColor = 'red';
-            email.nextElementSibling.innerText = 'Please inter a valid e-mail with @ and domain';
-            email.nextElementSibling.style.display = 'flex';
+            redMsg('Please inter a valid e-mail with @ and domain', email);
             isValid = false;
         } else {
             email.nextElementSibling.innerText = 'Please enter e-mail';
@@ -70,9 +68,7 @@ window.onload = function () { // сначала дождемся когда вс
         // - хотя бы один спецсимвол
         let validPassword = password.value.match(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Zа-яА-Я0-9!@#$%^&*()_+]{8,}$/);
         if (!validPassword && password.value !== '') {
-            password.style.borderColor = 'red';
-            password.nextElementSibling.innerText = 'Password should contain at least one uppercase letter, one digit and special character. Not less than 8 symbols long';
-            password.nextElementSibling.style.display = 'flex';
+            redMsg('Password should contain at least one uppercase letter, one digit and special character. Not less than 8 symbols long', password);
             isValid = false;
         } else {
             password.nextElementSibling.innerText = 'Please enter your password';
@@ -83,9 +79,8 @@ window.onload = function () { // сначала дождемся когда вс
         let repeatPassword = document.getElementById('repeat-password');
 
         if (repeatPassword.value !== '' && repeatPassword.value !== password.value) {
-            repeatPassword.nextElementSibling.innerText = 'Passwords does not match';
-            repeatPassword.nextElementSibling.style.display = 'flex'
             repeatPassword.value = '';
+            redMsg('Passwords does not match', repeatPassword);
             isValid = false;
         } else {
             repeatPassword.nextElementSibling.innerText = 'Please repeat your password';
@@ -218,14 +213,12 @@ window.onload = function () { // сначала дождемся когда вс
         password.nextElementSibling.style.display = 'none' // скрываем сообщение об ошибке
 
         if (userName.value === '') {
-            userName.nextElementSibling.style.display = 'flex';
-            userName.style.borderColor = 'red';
+            redMsg('Please enter your username',userName);
             isValid = false;
         }
 
         if (password.value === '') {
-            password.nextElementSibling.style.display = 'flex';
-            password.style.borderColor = 'red';
+            redMsg('Please enter your password',password);
             isValid = false;
         }
 
@@ -244,9 +237,7 @@ window.onload = function () { // сначала дождемся когда вс
                 return client.username === loginClient.username;
             });
             if (!isClientExist) {
-                userName.nextElementSibling.style.display = 'flex';
-                userName.nextElementSibling.innerText = 'Such user does not exist!';
-                userName.style.borderColor = 'red';
+                redMsg('Such user does not exist!', userName);
                 userAccount = false;
             } else {
                 userName.nextElementSibling.innerText = 'Please enter User name';
@@ -257,9 +248,7 @@ window.onload = function () { // сначала дождемся когда вс
                 return client.username === loginClient.username && client.psw === loginClient.psw;
             });
             if (!isPasswordMatch) {
-                password.nextElementSibling.style.display = 'flex';
-                password.nextElementSibling.innerText = 'Password does not match';
-                password.style.borderColor = 'red';
+                redMsg('Password does not match', password);
                 userAccount = false;
             } else {
                 userName.nextElementSibling.innerText = 'Please enter your password';
