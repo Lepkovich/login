@@ -8,6 +8,11 @@ window.onload = function () { // сначала дождемся когда вс
     button.addEventListener('click', SingUp);
     haveAccount.addEventListener("click", signIn); // по клику на 'Already have an account?' запускаем функцию SignIn
 
+    function redInput(errorMsg) {
+        this.style.borderColor = 'red';
+        this.nextElementSibling.style.display = 'flex';
+        this.nextElementSibling.innerText = errorMsg;
+    }
 
     function SingUp(e) {
         e.preventDefault();
@@ -19,6 +24,7 @@ window.onload = function () { // сначала дождемся когда вс
             if (inputs[i].value === '') {
                 inputs[i].style.borderColor = 'red';
                 inputs[i].nextElementSibling.style.display = 'flex'
+                // redInput.call(this);
                 isValid = false;
             }
         }
@@ -28,6 +34,7 @@ window.onload = function () { // сначала дождемся когда вс
             fullName.style.borderColor = 'red';
             fullName.nextElementSibling.innerText = 'Full name may contain of letters and space only';
             fullName.nextElementSibling.style.display = 'flex';
+            // redInput.call(this, 'Full name may contain of letters and space only');
             isValid = false;
         } else {
             fullName.nextElementSibling.innerText = 'Please enter your full name';
