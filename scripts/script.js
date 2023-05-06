@@ -110,33 +110,36 @@ window.onload = function () { // сначала дождемся когда вс
                 mail,
                 psw
             }
-            clients.push(client); // добавляем текущего клиента в массив clients
             console.log('переменная client: ');
             console.log(client);
-            console.log('массив clients: ');
-            console.log(clients);
             console.log('текущий localStorage: ');
             console.log(localStorage);
 
 
             // получаем существующих клиентов из localStorage
-            let existingClients = JSON.parse(localStorage.getItem('clients')) || [];
-
-            console.log('переменная existingClients: ');
-            console.log(existingClients);
-
-            // Добавляем нового клиента в массив существующих клиентов
-            existingClients.push(client);
-
-            console.log('existingClients + client: ');
-            console.log(existingClients);
+                let existingClients = JSON.parse(localStorage.getItem('clients')) || [];
 
 
-            // Сохраняем обновленный массив клиентов в localStorage
-            localStorage.setItem('clients', JSON.stringify(existingClients));
+                console.log('переменная existingClients: ');
+                console.log(existingClients);
 
-            console.log('localStorage: ');
-            console.log(localStorage);
+                // Добавляем нового клиента в массив существующих клиентов
+                if (Array.isArray(existingClients)) {
+                    existingClients.push(client);
+                } else {
+                    existingClients = [client];
+                }
+                // existingClients.push(client);
+
+                console.log('existingClients + client: ');
+                console.log(existingClients);
+
+
+                // Сохраняем обновленный массив клиентов в localStorage
+                localStorage.setItem('clients', JSON.stringify(existingClients));
+
+                console.log('localStorage: ');
+                console.log(localStorage);
 
 // • Если код прошёл все проверки успешно - должен появиться попап с текстом «На вашу почту выслана ссылка, перейдите по ней,
 // чтобы завершить регистрацию» и кнопкой «ОК».
